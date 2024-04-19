@@ -5,13 +5,16 @@ from models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseMod
 from bs4 import BeautifulSoup
 import requests
 from openai import OpenAI
+from helpers.helpers import get_test_html_content, update_dict_with_new_data
+from services.data_extraction import extract_information_from_url
 
-async def test_analyze_url(params: UrlAnalysisRequestParams) -> UrlAnalysisResponseModel:
-    extracted_data = {"url": params.url, "parameters": params.parameters, "test": "test"}
+
+async def test_scrape_and_extract_data(params: UrlAnalysisRequestParams) -> UrlAnalysisResponseModel:
+    extracted_data = {"url": params.url, "parameters": params.sought_data, "test": "test"}
     return UrlAnalysisResponseModel(extracted_data=extracted_data)
 
-async def analyse_url(params: UrlAnalysisRequestParams) -> UrlAnalysisResponseModel:
-    extracted_data = {key: None for key in params.parameters}
+async def scrape_and_extract_data(params: UrlAnalysisRequestParams) -> UrlAnalysisResponseModel:
+    extracted_data = {key: "" for key in params.sought_data}
     links_to_visit = {params.url}
     visited_links = set()
     while len(links_to_visit) > 0:
@@ -119,3 +122,18 @@ async def get_completion(prompt, model):
 
 async def update_extracted_data(html_content: Any) -> Dict[str, Any]:
     return
+
+async def download_link_content_test(url: HttpUrl, use_test_file=False) -> str:
+    if use_test_file:
+        return get_test_html_content()
+    try: 
+        headers = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+                  }
+        session = requests.Session()
+        session.headers.update(headers)
+        response = session.get(url) # TODO: make async
+        return response.text  
+    except requests.RequestException as e:
+        return str(e)  
+

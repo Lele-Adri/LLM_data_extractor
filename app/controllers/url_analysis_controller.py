@@ -5,6 +5,9 @@ from models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseMod
      UrlAnalysisInfoLinks
 from services.url_analyzer_service import test_analyze_url, analyse_url, \
      download_link_content, filter_relevant_links_using_title
+from services.url_analyzer_service import test_scrape_and_extract_data, scrape_and_extract_data, \
+                download_link_content, filter_relevant_links_using_title
+
 
 url_analysis_router = APIRouter(prefix="/url-analysis", tags=["URL Analysis"])
 
