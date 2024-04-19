@@ -12,3 +12,10 @@ class UrlAnalysisRequestParams(BaseModel):
 class UrlAnalysisResponseModel(BaseModel):
     """Url analysis response model"""
     extracted_data: dict = Field(..., description="A dictionary containing extracted data")
+
+class UrlAnalysisInfoLinks(BaseModel):
+    """Output from function download link content"""
+    html_content: str = Field(..., description="HTML content of the webpage")
+    link_dictionary: dict = Field(..., description="Dictionary containing titles and urls of links")
+    titles_set: set[str] =  Field(..., description="Set containing all the titles of the links")
+    urls_set: set[HttpUrl] =  Field(..., description="Set containing all the urls of the links")
