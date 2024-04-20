@@ -1,29 +1,15 @@
 import json
-from operator import itemgetter
-import os
-from dotenv import load_dotenv
 from typing import Dict
-import html2text
-from langchain_openai import ChatOpenAI, OpenAI
-from langchain_core.prompts import PromptTemplate
 from langchain_community.document_loaders import WebBaseLoader
 from langchain.indexes import VectorstoreIndexCreator
-import htmlmin
-from pydantic import HttpUrl
 
 from models.url_analysis import UrlAnalysisRequestParams
+from helpers.llm_helpers import get_gpt_3
 
 
 async def extract_information_from_url(params: UrlAnalysisRequestParams) -> Dict[str, str]:
-    load_dotenv()
-    llm = ChatOpenAI(
-        temperature=0.1,
-        # model="gpt-4-1106-preview",
-        model="gpt-3.5-turbo-1106",
-        verbose=True,
-        max_tokens=1000,
-        api_key=os.getenv("OPENAI_API_KEY")
-    )
+
+    llm = get_gpt_3()
     
     # TODO: arg list will be populated with elements of data_to_extract
     loader = WebBaseLoader(str(params.url))

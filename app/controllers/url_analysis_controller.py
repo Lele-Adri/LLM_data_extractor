@@ -1,11 +1,9 @@
 from fastapi import APIRouter
-from typing import Tuple, Dict, Set, List
+from typing import Tuple, Set
 from pydantic import HttpUrl
 from models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseModel,\
      UrlAnalysisInfoLinks
-from services.url_analyzer_service import test_analyze_url, analyse_url, \
-     download_link_content, filter_relevant_links_using_title
-from services.url_analyzer_service import test_scrape_and_extract_data, scrape_and_extract_data, \
+from services.url_analyzer_service import scrape_and_extract_data, \
                 download_link_content, filter_relevant_links_using_title
 
 
@@ -22,8 +20,7 @@ async def analyze_url(request: UrlAnalysisRequestParams) -> UrlAnalysisResponseM
     - dict: A dictionary containing the data retrieved.
     """
     # Implementation of URL analysis would go here
-    extractedData : UrlAnalysisResponseModel = await test_analyze_url(request)
-
+    extractedData : UrlAnalysisResponseModel = await scrape_and_extract_data(request)
     return extractedData
 
 
@@ -37,5 +34,5 @@ async def test_adri_url(request: UrlAnalysisRequestParams) -> Tuple[Set[str], Se
     #    "https://www.mersen.com//group/corporate-social-responsibility", \
     #    "https://www.mersen.com//investors/mersen-profile"])
 
-    test_data_2 : Tuple[Set[str], Set[HttpUrl]] = await filter_relevant_links_using_title(test_data1.link_dictionary, test_data1.titles_set, request.parameters)
+    test_data_2 : Tuple[Set[str], Set[HttpUrl]] = await filter_relevant_links_using_title(test_data1.link_dictionary, test_data1.titles_set, request.sought_data)
     return test_data_2
