@@ -22,23 +22,23 @@ def get_test_html_content():
 async def download_link_content_session(url: HttpUrl, use_test_file=False) -> str:
     if use_test_file:
         return get_test_html_content()
-    try: 
+    try:
         headers = {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
                   }
         session = requests.Session()
         session.headers.update(headers)
         response = session.get(url) # TODO: make async
-        return response.text  
+        return response.text
     except requests.RequestException as e:
-        return str(e)  
+        return str(e)
 
 
 # TODO: make async
-async def download_link_content(params: UrlAnalysisRequestParams) -> UrlAnalysisInfoLinks:
+async def download_link_content(url: HttpUrl) -> UrlAnalysisInfoLinks:
 
     # extract links using BeautifulSoup
-    r = requests.get(params.url)
+    r = requests.get(url)
     soup = BeautifulSoup(r.content, 'html.parser')
 
     links = soup.find_all("a") # Find all elements with the tag <a>
@@ -50,7 +50,7 @@ async def download_link_content(params: UrlAnalysisRequestParams) -> UrlAnalysis
         if href_link.startswith("http"):
             total_link = href_link
         else:
-            total_link = str(params.url) + href_link
+            total_link = str(url) + href_link
 
         title_link_dict[str(link.string).strip(" \n ")] = total_link
 
@@ -71,3 +71,22 @@ async def download_link_content(params: UrlAnalysisRequestParams) -> UrlAnalysis
                                 link_dictionary=cleaned_dict,
                                 titles_set=set(title_list),
                                 urls_set=set(link_list))
+
+async def remove_known_links(info_links: UrlAnalysisInfoLinks, visited_links: HttpUrl, links_to_visit: HttpUrl) -> UrlAnalysisInfoLinks:
+    """
+    """
+
+    new_dict = {}
+    new_title_list = []
+    new_link_list = []
+    for title, link in info_links.link_dictionary.items():
+        if link not in visited_links and link not in links_to_visit:
+            new_dict[title] = link
+            new_title_list.append(title)
+            new_link_list.append(link)
+
+
+    return UrlAnalysisInfoLinks(html_content=info_links.html_content,
+                                link_dictionary=new_dict,
+                                titles_set=set(new_title_list),
+                                urls_set=set(new_link_list))
