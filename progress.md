@@ -2,15 +2,15 @@
 
 #### Consider only static websites
 
-**Step 1**: Download root URL HTML content. - Adibou
+**Step 1**: Discover all urls from base URL 
 
-**Step 2**: Extract all anchor tags (<a>...</a>) from HTML. - Adibou
+  - **1.1**: From base URL, get all child links.
 
-**Step 3**: Append links to set of available links if title sounds relevant. - Adibou
+  - **1.2**: Filter based on link title. 
 
-**Step 4**: For each link in list, avoiding already visited urls:
-  * download HTML content and repeat step 2 - Lele
-  * extract relevant data from page and include source (url) - Lele
+  - **1.3**: Append relevant links to set of available links.
+
+**Step 2**: From the list of urls, extract relevant data
 
 
 ## 19th April
@@ -19,10 +19,8 @@
 
 ** Build Docker image and store image on GoogleArtifactRegistry
 
+## Next steps 
 
+** Send all url to the data extraction service in the end of discovery, all at once. 
 
-
-
-****** Later
-
-** Try to take screenshot of the website and extract relevant infos from screenshot
+** Take screenshot of the website and extract relevant data using openAI vision.
