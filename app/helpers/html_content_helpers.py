@@ -1,5 +1,7 @@
 
 import os
+from typing import Dict, Set
+from urllib.parse import urljoin, urlparse, urlunparse
 from bs4 import BeautifulSoup
 from pydantic import HttpUrl
 import requests
@@ -35,58 +37,43 @@ async def download_link_content_session(url: HttpUrl, use_test_file=False) -> st
 
 
 # TODO: make async
-async def download_link_content(url: HttpUrl) -> UrlAnalysisInfoLinks:
+async def download_link_content(url: str) -> UrlAnalysisInfoLinks:
 
-    # extract links using BeautifulSoup
     r = requests.get(url)
-    soup = BeautifulSoup(r.content, 'html.parser')
+    r.raise_for_status()
+    soup = BeautifulSoup(r.text, 'html.parser')
 
-    links = soup.find_all("a") # Find all elements with the tag <a>
+    links: Dict[str, str] = {
+        urljoin(url, link['href']): str(link.string).strip(" \n ")
+        for link in soup.find_all('a')
+        if link.get('href')
+    }
 
-    title_link_dict = {}
-    for link in links:
-        href_link = str(link.get("href"))
-
-        if href_link.startswith("http"):
-            total_link = href_link
-        else:
-            total_link = str(url) + href_link
-
-        title_link_dict[str(link.string).strip(" \n ")] = total_link
-
-    # remove duplicate urls from dict
-    cleaned_dict = {}
-    for key,value in title_link_dict.items():
-        if value not in cleaned_dict.values():
-            cleaned_dict[key] = value
-
-    # create list with titles and list with links frolm the dictionary
-    title_list = []
-    link_list = []
-    for key, value in cleaned_dict.items():
-        title_list.append(key)
-        link_list.append(value)
-
-    return UrlAnalysisInfoLinks(html_content=r.text,
-                                link_dictionary=cleaned_dict,
-                                titles_set=set(title_list),
-                                urls_set=set(link_list))
-
-async def remove_known_links(info_links: UrlAnalysisInfoLinks, visited_links: HttpUrl, links_to_visit: HttpUrl) -> UrlAnalysisInfoLinks:
-    """
-    """
-
-    new_dict = {}
-    new_title_list = []
-    new_link_list = []
-    for title, link in info_links.link_dictionary.items():
-        if link not in visited_links and link not in links_to_visit:
-            new_dict[title] = link
-            new_title_list.append(title)
-            new_link_list.append(link)
+    return UrlAnalysisInfoLinks(html_content=r.text, link_dictionary=links)
 
 
-    return UrlAnalysisInfoLinks(html_content=info_links.html_content,
-                                link_dictionary=new_dict,
-                                titles_set=set(new_title_list),
-                                urls_set=set(new_link_list))
+async def remove_known_links(info_links: UrlAnalysisInfoLinks, visited_links: Set[str], links_to_visit: Set[str]) -> UrlAnalysisInfoLinks:
+    info_links.link_dictionary = {url: title for url, title in info_links.link_dictionary.items() 
+                                  if url not in visited_links and url not in links_to_visit}
+    return info_links
+
+    
+def remove_out_of_scope_links(base_url: HttpUrl, info_links: Set[str]) -> set[str]:
+    return {link for link in info_links if are_same_base_domain(str(base_url), link)}
+    
+def are_same_base_domain(url1: str, url2: str) -> bool:
+    urlparse(url2).netloc = urlparse(url1).netloc
+
+def normalize_url(url: str):
+    # Parse the URL into components
+    parsed_url = urlparse(url)
+    # Normalize the components
+    normalized = parsed_url._replace(
+        scheme=parsed_url.scheme.lower(),
+        netloc=parsed_url.netloc.lower(),
+        path=parsed_url.path.rstrip('/'),
+        query=parsed_url.query,
+        fragment=''
+    )
+    # Return the normalized URL as a string
+    return urlunparse(normalized)
