@@ -3,7 +3,7 @@ from typing import Tuple, Set
 from pydantic import HttpUrl
 from models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseModel,\
      UrlAnalysisInfoLinks
-from services.url_analyzer_service import scrape_and_extract_data, \
+from services.url_analyzer_service import scrape_then_extract_data, \
                 download_link_content, filter_relevant_links_using_title
 
 
@@ -20,7 +20,7 @@ async def analyze_url(request: UrlAnalysisRequestParams) -> UrlAnalysisResponseM
     - dict: A dictionary containing the data retrieved.
     """
     # Implementation of URL analysis would go here
-    extractedData : UrlAnalysisResponseModel = await scrape_and_extract_data(request)
+    extractedData : UrlAnalysisResponseModel = await scrape_then_extract_data(request)
     return extractedData
 
 
