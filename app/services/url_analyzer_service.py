@@ -1,11 +1,11 @@
 from typing import Dict, Set
 from pydantic import HttpUrl
-from helpers.helpers import update_dict_with_new_data
-from helpers.html_content_helpers import download_link_content, normalize_url, remove_known_links, remove_out_of_scope_links
-from services.url_filtering_embeddings_service import filter_relevant_links_using_title
-from models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseModel, \
+from app.helpers.helpers import update_dict_with_new_data
+from app.helpers.html_content_helpers import download_link_content, normalize_url, remove_known_links, remove_out_of_scope_links
+from app.services.url_filtering_service import filter_relevant_links_using_title
+from app.models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseModel, \
      UrlAnalysisInfoLinks
-from services.data_extraction_service import extract_information_from_url, extract_information_and_sources_from_url
+from app.services.data_extraction_service import extract_information_from_url, extract_information_and_sources_from_url
 
 MAX_LINKS_TO_VISIT = 50
 

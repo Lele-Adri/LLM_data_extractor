@@ -1,7 +1,8 @@
 from typing import Dict, List, Set
 from langchain_community.document_loaders import WebBaseLoader
 from langchain.indexes import VectorstoreIndexCreator
-from models.url_analysis import ExtractedDataModel, UrlAnalysisRequestParams, UrlAnalysisResponseModel
+from app.models.url_analysis import ExtractedDataModel, UrlAnalysisRequestParams, UrlAnalysisResponseModel
+from app.helpers.llm_helpers import get_gpt_3
 
 NOT_FOUND_STRING  = "NOT FOUND"
 
@@ -19,9 +20,9 @@ async def extract_information_and_sources_from_url(params: UrlAnalysisRequestPar
             ans = index.query(query)
             if NOT_FOUND_STRING not in ans and ans != "":
                 response.extracted_data[data].append(
-                    ExtractedDataModel(data_name=data, 
-                                       data_description=description, 
-                                       data_source=url, 
+                    ExtractedDataModel(data_name=data,
+                                       data_description=description,
+                                       data_source=url,
                                        extracted_information=ans)
                 )
 
@@ -43,13 +44,13 @@ async def extract_information_from_url(params: UrlAnalysisRequestParams, urls_li
 
 def get_data_query(data: str, description: str):
         return f"""
-                This is part of a larger application that allows users to extract information from web pages. 
-                The user has now specified the information they are interested in. 
-                Here is their input: 
+                This is part of a larger application that allows users to extract information from web pages.
+                The user has now specified the information they are interested in.
+                Here is their input:
                     - [Data name]: {data}
                     - [Description]: {description}
-                Your task is to look up this information from the provided web content. 
+                Your task is to look up this information from the provided web content.
                 You should either output the information you gathered from the web content, or "{NOT_FOUND_STRING}" if you didn't find it.
-                If you did find the information, only provide the information you found, without any additional comments. 
+                If you did find the information, only provide the information you found, without any additional comments.
                 The answer should concise and straight to the point, while containing all the information you could find.
                 """

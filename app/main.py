@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
-from controllers.url_analysis_controller import url_analysis_router
+from app.controllers.url_analysis_controller import url_analysis_router
 
 app = FastAPI()
 

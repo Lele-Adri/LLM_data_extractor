@@ -5,8 +5,7 @@ from urllib.parse import urljoin, urlparse, urlunparse
 from bs4 import BeautifulSoup
 from pydantic import HttpUrl
 import requests
-
-from models.url_analysis import EmptyUrlAnalysisInfoLinks, UrlAnalysisInfoLinks, UrlAnalysisRequestParams
+from app.models.url_analysis import EmptyUrlAnalysisInfoLinks, UrlAnalysisInfoLinks, UrlAnalysisRequestParams
 
 
 def get_test_html_content():
@@ -66,18 +65,18 @@ async def download_link_content(url: str) -> UrlAnalysisInfoLinks:
 
 
 def remove_known_links(info_links: UrlAnalysisInfoLinks, visited_links: Set[str], links_to_visit: Set[str]) -> UrlAnalysisInfoLinks:
-    info_links.link_dictionary = {url: title for url, title in info_links.link_dictionary.items() 
+    info_links.link_dictionary = {url: title for url, title in info_links.link_dictionary.items()
                                   if url not in visited_links and url not in links_to_visit}
     return info_links
 
-    
+
 def remove_out_of_scope_links(base_url: HttpUrl, info_links: Set[str]) -> Set[str]:
     for link in info_links:
         if are_same_base_domain(str(base_url), link):
-            continue;
+            continue
     return {link for link in info_links if are_same_base_domain(str(base_url), link)}
 
-    
+
 def are_same_base_domain(url1: str, url2: str) -> bool:
     p1 = urlparse(url1).netloc
     p2 = urlparse(url2).netloc
