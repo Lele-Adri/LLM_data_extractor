@@ -24,3 +24,10 @@
 ** Send all url to the data extraction service in the end of discovery, all at once. 
 
 ** Take screenshot of the website and extract relevant data using openAI vision.
+
+## 21st April
+
+** Add step in while loop to avoid links with url different from host url (the one coming from params.url)
+** Add timeout in while **
+** Make embeddings & similarity search for filtering the list of links ** 
+** Handle exceptions: url not found & json response object can't be decoded properly **

@@ -1,7 +1,7 @@
 from typing import Dict, Set, Tuple
 
 from pydantic import HttpUrl
-from helpers.llm_helpers import get_gpt_4_completion
+from app.helpers.llm_helpers import get_gpt_4_completion
 
 
 async def filter_relevant_links_using_title(titles_urls_dict: Dict, titles_list: Set[str], target_data_dict: Dict[str, str]) -> Set[HttpUrl]:

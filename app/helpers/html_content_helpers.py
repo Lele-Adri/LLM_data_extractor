@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from pydantic import HttpUrl
 import requests
 
-from models.url_analysis import UrlAnalysisInfoLinks, UrlAnalysisRequestParams
+from app.models.url_analysis import UrlAnalysisInfoLinks, UrlAnalysisRequestParams
 
 
 def get_test_html_content():
