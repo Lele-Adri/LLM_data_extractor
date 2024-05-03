@@ -2,7 +2,9 @@ from typing import Dict, Set
 from pydantic import HttpUrl
 from app.helpers.helpers import update_dict_with_new_data
 from app.helpers.html_content_helpers import download_link_content, normalize_url, remove_known_links, remove_out_of_scope_links
-from app.services.url_filtering_service import filter_relevant_links_using_title, filter_relevant_links_using_embeddings
+from app.services.url_filtering_embeddings_service import filter_relevant_links_using_title
+from app.services.url_filtering_service import filter_relevant_links_using_embeddings
+
 from app.models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseModel, \
      UrlAnalysisInfoLinks
 from app.services.data_extraction_service import extract_information_from_url, extract_information_and_sources_from_url
