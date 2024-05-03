@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from pydantic import HttpUrl
 import requests
 
-from models.url_analysis import UrlAnalysisInfoLinks, UrlAnalysisRequestParams
+from models.url_analysis import EmptyUrlAnalysisInfoLinks, UrlAnalysisInfoLinks, UrlAnalysisRequestParams
 
 
 def get_test_html_content():
@@ -39,9 +39,22 @@ async def download_link_content_session(url: HttpUrl, use_test_file=False) -> st
 # TODO: make async
 async def download_link_content(url: str) -> UrlAnalysisInfoLinks:
 
-    r = requests.get(url)
-    r.raise_for_status()
-    soup = BeautifulSoup(r.text, 'html.parser')
+    try:
+        headers = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+                    }
+        session = requests.Session()
+        session.headers.update(headers)
+        r = session.get(url)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, 'html.parser')
+    except requests.RequestException as e:
+        print(f"Request exception occurred for url: {url}")
+        return EmptyUrlAnalysisInfoLinks()
+    except:
+        print(f"Unknown error occurred for url: {url}")
+        return EmptyUrlAnalysisInfoLinks()
+
 
     links: Dict[str, str] = {
         urljoin(url, link['href']): str(link.string).strip(" \n ")
