@@ -1,13 +1,8 @@
 from typing import Dict, Set
 from pydantic import HttpUrl
 from app.helpers.helpers import update_dict_with_new_data
-<<<<<<< HEAD
 from app.helpers.html_content_helpers import download_link_content, normalize_url, remove_known_links, remove_out_of_scope_links
-from app.services.url_filtering_service import filter_relevant_links_using_title
-=======
-from app.helpers.html_content_helpers import download_link_content, remove_known_links
 from app.services.url_filtering_service import filter_relevant_links_using_title, filter_relevant_links_using_embeddings
->>>>>>> 55c206f (last changes on branch - backup)
 from app.models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseModel, \
      UrlAnalysisInfoLinks
 from app.services.data_extraction_service import extract_information_from_url, extract_information_and_sources_from_url
@@ -33,15 +28,11 @@ async def scrape_and_extract_data(params: UrlAnalysisRequestParams) -> UrlAnalys
         extracted_data = update_dict_with_new_data(extracted_data, new_data)
         extracted_links: UrlAnalysisInfoLinks = await download_link_content(current_link)
         clean_extracted_links: UrlAnalysisInfoLinks = await remove_known_links(extracted_links, visited_links, links_to_visit)
-<<<<<<< HEAD
-        links_of_interest: Set[str] = await filter_relevant_links_using_title(clean_extracted_links.link_dictionary, params.sought_data)
-=======
         print("\n Enter filtering method \n")
         print(clean_extracted_links.link_dictionary)
         links_of_interest: Set[HttpUrl] = await filter_relevant_links_using_embeddings(clean_extracted_links.link_dictionary, clean_extracted_links.titles_set, params.url, params.sought_data, treshold)
         print("\n Exit filtering method \n")
         print(links_of_interest)
->>>>>>> 55c206f (last changes on branch - backup)
         new_links = links_of_interest
         print("\n Before: \n")
         print(links_to_visit)
