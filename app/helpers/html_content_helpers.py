@@ -52,17 +52,23 @@ async def download_link_content(url: str) -> UrlAnalysisInfoLinks:
     return UrlAnalysisInfoLinks(html_content=r.text, link_dictionary=links)
 
 
-async def remove_known_links(info_links: UrlAnalysisInfoLinks, visited_links: Set[str], links_to_visit: Set[str]) -> UrlAnalysisInfoLinks:
+def remove_known_links(info_links: UrlAnalysisInfoLinks, visited_links: Set[str], links_to_visit: Set[str]) -> UrlAnalysisInfoLinks:
     info_links.link_dictionary = {url: title for url, title in info_links.link_dictionary.items() 
                                   if url not in visited_links and url not in links_to_visit}
     return info_links
 
     
-def remove_out_of_scope_links(base_url: HttpUrl, info_links: Set[str]) -> set[str]:
+def remove_out_of_scope_links(base_url: HttpUrl, info_links: Set[str]) -> Set[str]:
+    for link in info_links:
+        if are_same_base_domain(str(base_url), link):
+            continue;
     return {link for link in info_links if are_same_base_domain(str(base_url), link)}
+
     
 def are_same_base_domain(url1: str, url2: str) -> bool:
-    urlparse(url2).netloc = urlparse(url1).netloc
+    p1 = urlparse(url1).netloc
+    p2 = urlparse(url2).netloc
+    return urlparse(url2).netloc == urlparse(url1).netloc
 
 def normalize_url(url: str):
     # Parse the URL into components

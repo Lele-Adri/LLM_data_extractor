@@ -1,4 +1,4 @@
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set
 
 from pydantic import HttpUrl
 from helpers.html_content_helpers import normalize_url
@@ -19,7 +19,7 @@ async def filter_relevant_links_using_title(urls_titles_dict: Dict[str, str], ta
     Do not output your reasoning.
     You are asked to perform the 3 following tasks:
         1. Go through the list of buttons given as input.
-        2. Select the buttons that might contain any relavant information about: {subject}\
+        2. Select the buttons that might contain any relevant information about: {subject}\
            Store those buttons in a list. If there are no relevant buttons, create an empty list.
         3. Output the list from step 2.
 
