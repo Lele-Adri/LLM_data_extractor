@@ -1,5 +1,8 @@
-from typing import List
+from typing import List, Set
 from pydantic import BaseModel, HttpUrl, Field
+
+from app.helpers.html_content_helpers import set_contains_link
+from app.helpers.url_analysis_helpers import ExtractedDataModel
 
 class UrlAnalysisRequestParams(BaseModel):
     url: HttpUrl     = Field(..., description="The URL to extract data from.")
@@ -10,24 +13,32 @@ class UrlAnalysisRequestParams(BaseModel):
                                             *Example*: {'Investment strategy': 'The investment strategy of the firm, e.g., taking risks, big investments only.'}")
 
 
-class ExtractedDataModel(BaseModel):
-    """Extracted information about some data."""
-    data_name: str = Field(..., description="Name of extracted data.")
-    data_description: str = Field(..., description="Description of extracted data.")
-    data_source: str = Field(..., description="Source of extracted data.")
-    extracted_information: str = Field(..., description="Information extracted corresponding to this data.")
-
-
 class UrlAnalysisResponseModel(BaseModel):
     """Url analysis response model"""
     extracted_data: dict[str, List[ExtractedDataModel]] = Field(..., description="A dictionary containing extracted data")
 
 
-class UrlAnalysisInfoLinks(BaseModel):
-    """Output from function download link content"""
-    html_content: str = Field(..., description="HTML content of the webpage")
-    link_dictionary: dict[str, str] = Field(..., description="Dictionary containing titles and urls of links")
+class UrlAnalysisDiscoveredLinks(BaseModel):
+    """Object containing discovered links with each data piece as a key"""
+    extracted_links: dict[str, Set[str]] = Field(..., description="A dictionary containing extracted data")
 
-class EmptyUrlAnalysisInfoLinks(UrlAnalysisInfoLinks):
-    html_content: str = ""
-    link_dictionary: dict[str, str] = {}
+    def contains_url(self, url):
+        """Checks if a url is contained in the dictionary"""
+        for _, links in self.extracted_links.items():
+            if set_contains_link(links, url):
+                return True
+        return False
+    
+    def get_all_links(self) -> Set[str]:
+        all_links: Set[str] = set()
+        for _, link_set in self.extracted_links.items():
+            all_links.update(link_set)
+        return all_links
+
+    def updateFromDiscoveredLinks(self, other: 'UrlAnalysisDiscoveredLinks') -> bool:
+        for data, urls in other.extracted_links.items():
+            if data in self.extracted_links:
+                self.extracted_links[data].update(urls)
+            else:
+                self.extracted_links[data] = urls
+

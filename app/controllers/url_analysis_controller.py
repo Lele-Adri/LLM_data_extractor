@@ -1,11 +1,7 @@
 from fastapi import APIRouter
-from pydantic import HttpUrl
-from app.models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseModel,\
-     UrlAnalysisInfoLinks
+from app.models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseModel
 
-from app.services.url_analyzer_service import scrape_and_extract_data, \
-                download_link_content, filter_relevant_links_using_title, \
-                scrape_then_extract_data
+from app.services.url_analyzer_service import scrape_then_extract_data
 
 
 url_analysis_router = APIRouter(prefix="/url-analysis", tags=["URL Analysis"])

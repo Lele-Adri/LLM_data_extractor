@@ -5,7 +5,8 @@ from urllib.parse import urljoin, urlparse, urlunparse
 from bs4 import BeautifulSoup
 from pydantic import HttpUrl
 import requests
-from app.models.url_analysis import EmptyUrlAnalysisInfoLinks, UrlAnalysisInfoLinks, UrlAnalysisRequestParams
+from app.helpers.url_analysis_helpers import EmptyUrlAnalysisInfoLinks
+from app.helpers.url_analysis_helpers import UrlAnalysisInfoLinks
 
 
 def get_test_html_content():

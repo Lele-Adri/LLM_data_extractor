@@ -1,27 +1,25 @@
 from typing import Dict, List, Set
 from langchain_community.document_loaders import WebBaseLoader
 from langchain.indexes import VectorstoreIndexCreator
-from app.models.url_analysis import ExtractedDataModel, UrlAnalysisRequestParams, UrlAnalysisResponseModel
+from app.models.url_analysis import ExtractedDataModel, UrlAnalysisDiscoveredLinks, UrlAnalysisRequestParams, UrlAnalysisResponseModel
 from app.helpers.llm_helpers import get_gpt_3
 
 NOT_FOUND_STRING  = "NOT FOUND"
 
-async def extract_information_and_sources_from_url(params: UrlAnalysisRequestParams, urls_set: Set[str]) -> UrlAnalysisResponseModel:
-    if (len(urls_set) == 0): return dict()
+async def extract_information_and_sources_from_url(params: UrlAnalysisRequestParams, discovered_urls: UrlAnalysisDiscoveredLinks) -> UrlAnalysisResponseModel:
 
-    indexes: Dict[VectorstoreIndexCreator] = {url: VectorstoreIndexCreator().from_loaders([WebBaseLoader(url)]) for url in urls_set}
     response: UrlAnalysisResponseModel = UrlAnalysisResponseModel(
-        extracted_data={data: set() for data in params.sought_data.keys()}
-    )
+        extracted_data={data: set() for data in discovered_urls.extracted_links.keys()})
 
-    for data, description in params.sought_data.items():
-        query = get_data_query(data, description)
-        for url, index in indexes.items():
+    for data, discovered_urls_set in discovered_urls.extracted_links.items():
+        query = get_data_query(data, params.sought_data[data])
+        for url in discovered_urls_set:
+            index = VectorstoreIndexCreator().from_loaders([WebBaseLoader(url)])
             ans = index.query(query)
             if NOT_FOUND_STRING not in ans and ans != "":
                 response.extracted_data[data].append(
                     ExtractedDataModel(data_name=data,
-                                       data_description=description,
+                                       data_description=params.sought_data[data],
                                        data_source=url,
                                        extracted_information=ans)
                 )

@@ -10,7 +10,7 @@ steps:
   # Deploy the image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
-    args: ['run', 'deploy', 'llm-extractor', '--image', 'gcr.io/$PROJECT_ID/llm-extractor:$COMMIT_SHA', 
+    args: ['run', 'deploy', 'llm-extractor', '--image', 'gcr.io/$PROJECT_ID/llm-extractor:$COMMIT_SHA', '--memory', '1Gi',
            '--region', 'us-central1', '--platform', 'managed', '--update-secrets', 'OPENAI_API_KEY=projects/$PROJECT_NUMBER/secrets/OPENAI_API_KEY:latest']
 
 
