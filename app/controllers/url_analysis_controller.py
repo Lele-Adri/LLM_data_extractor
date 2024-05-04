@@ -1,6 +1,4 @@
-from fastapi import APIRouter, FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from typing import Tuple, Set
+from fastapi import APIRouter
 from pydantic import HttpUrl
 from app.models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseModel,\
      UrlAnalysisInfoLinks
@@ -10,26 +8,17 @@ from app.services.url_analyzer_service import scrape_and_extract_data, \
                 scrape_then_extract_data
 
 
-#url_analysis_router = APIRouter(prefix="/url-analysis", tags=["URL Analysis"])
-url_analysis_api = FastAPI()
-
-url_analysis_api.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
-)
+url_analysis_router = APIRouter(prefix="/url-analysis", tags=["URL Analysis"])
 
 # Endpoint for https://your-domain.com/
-@url_analysis_api.get("/")
+@url_analysis_router.get("/hello")
 def root():
     return {
         'message': "Hi, The API is running!"
     }
 
 
-@url_analysis_api.post("/url-analysis")
+@url_analysis_router.post("/")
 async def analyze_url(request: UrlAnalysisRequestParams) -> UrlAnalysisResponseModel:
     """
     Analyzes the URL and extracts data as specified by the parameters.
@@ -44,7 +33,7 @@ async def analyze_url(request: UrlAnalysisRequestParams) -> UrlAnalysisResponseM
     return extractedData
 
 
-@url_analysis_api.post("/test_adri")
+@url_analysis_router.post("/test_adri")
 async def test_adri_url(request: dict) -> str:
     """
     """

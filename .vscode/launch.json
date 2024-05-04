@@ -10,13 +10,13 @@
             "request": "launch",
             "module": "uvicorn",
             "args": [
-                "main:app", // Replace "main:app" with "<filename>:<FastAPI app variable name>"
+                "app.main:app", // Replace "main:app" with "<filename>:<FastAPI app variable name>"
                 "--reload",
                 "--host=127.0.0.1",
                 "--port=8000"
             ],
             "jinja": true,
-            "cwd": "${workspaceFolder}/app", 
+            "cwd": "${workspaceFolder}", 
             "console": "integratedTerminal",
             "python": "${workspaceFolder}\\venv\\Scripts\\python.exe",
             "env": {
