@@ -16,4 +16,4 @@ steps:
 
 timeout: '1600s'
 images:
-  - 'gcr.io/$PROJECT_ID/llm_data_extractor:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/llm-extractor:$COMMIT_SHA'
