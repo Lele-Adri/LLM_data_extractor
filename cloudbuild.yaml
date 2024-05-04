@@ -10,7 +10,8 @@ steps:
   # Deploy the image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
-    args: ['run', 'deploy', 'llm_data_extractor', '--image', 'gcr.io/$PROJECT_ID/my-api:$COMMIT_SHA', '--region', 'us-central1', '--platform', 'managed']
+    args: ['run', 'deploy', 'llm_data_extractor', '--image', 'gcr.io/$PROJECT_ID/my-api:$COMMIT_SHA', 
+           '--region', 'us-central1', '--platform', 'managed', '--env-vars-file', '.env.yaml']
 
 timeout: '1600s'
 images:
