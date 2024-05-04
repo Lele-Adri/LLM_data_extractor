@@ -71,15 +71,10 @@ def remove_known_links(info_links: UrlAnalysisInfoLinks, visited_links: Set[str]
 
 
 def remove_out_of_scope_links(base_url: HttpUrl, info_links: Set[str]) -> Set[str]:
-    for link in info_links:
-        if are_same_base_domain(str(base_url), link):
-            continue
     return {link for link in info_links if are_same_base_domain(str(base_url), link)}
 
 
 def are_same_base_domain(url1: str, url2: str) -> bool:
-    p1 = urlparse(url1).netloc
-    p2 = urlparse(url2).netloc
     return urlparse(url2).netloc == urlparse(url1).netloc
 
 def normalize_url(url: str):

@@ -57,6 +57,7 @@ async def discover_useful_links(params: UrlAnalysisRequestParams) -> Set[str]:
     counter = 0
     while len(links_to_visit) > 0 and counter < MAX_LINKS_TO_VISIT:
         counter += 1
+        print(f'counter: {counter}')
         current_link = links_to_visit.pop()
         print(f'visiting {current_link}')
         visited_links.add(current_link)
