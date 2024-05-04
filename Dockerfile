@@ -14,4 +14,4 @@ COPY /app /app
 #COPY Makefile Makefile
 
 #CMD uvicorn taxifare.api.fast:app --host 0.0.0.0 --port $PORT
-CMD uvicorn app.controllers.url_analysis_controller:url_analysis_api --host 0.0.0.0  --port $PORT
+CMD uvicorn app.main:app --host 0.0.0.0  --port $PORT
