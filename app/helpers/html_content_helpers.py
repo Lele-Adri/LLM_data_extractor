@@ -66,7 +66,7 @@ async def download_link_content(url: str) -> UrlAnalysisInfoLinks:
 
 def remove_known_links(info_links: UrlAnalysisInfoLinks, visited_links: Set[str], links_to_visit: Set[str]) -> UrlAnalysisInfoLinks:
     info_links.link_dictionary = {url: title for url, title in info_links.link_dictionary.items()
-                                  if url not in visited_links and url not in links_to_visit}
+                                  if not set_contains_link(visited_links, url) and not set_contains_link(links_to_visit, url)}
     return info_links
 
 
@@ -76,6 +76,21 @@ def remove_out_of_scope_links(base_url: HttpUrl, info_links: Set[str]) -> Set[st
 
 def are_same_base_domain(url1: str, url2: str) -> bool:
     return urlparse(url2).netloc == urlparse(url1).netloc
+
+def set_contains_link(links_set: Set[str], url: str) -> bool:
+    for link in links_set:
+        if are_sections_of_same_page(link, url):
+            return True
+    return False
+
+def are_sections_of_same_page(url1: str, url2: str) -> bool:
+    idx_hashtag_url1 = url1.find("#")
+    idx_hashtag_url2 = url2.find("#")
+    if idx_hashtag_url1 != -1:
+        url1 = url1[:idx_hashtag_url1]
+    if idx_hashtag_url2 != -1:
+        url2 = url2[:idx_hashtag_url2]
+    return url1 == url2
 
 def normalize_url(url: str):
     # Parse the URL into components

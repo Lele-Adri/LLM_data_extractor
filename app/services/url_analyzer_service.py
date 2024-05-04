@@ -9,7 +9,7 @@ from app.models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisRespons
      UrlAnalysisInfoLinks
 from app.services.data_extraction_service import extract_information_from_url, extract_information_and_sources_from_url
 
-MAX_LINKS_TO_VISIT = 50
+MAX_LINKS_TO_VISIT = 20
 
 async def scrape_and_extract_data(params: UrlAnalysisRequestParams) -> UrlAnalysisResponseModel:
     extracted_data: dict[str, str] = {key: "" for key in params.sought_data}
