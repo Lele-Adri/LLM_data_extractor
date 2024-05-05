@@ -1,7 +1,7 @@
 from typing import Dict, List, Set
 
 from pydantic import HttpUrl
-from app.helpers.html_content_helpers import normalize_url
+from app.helpers.url_analysis_helpers import normalize_url
 from app.helpers.llm_helpers import get_gpt_4_completion
 
 import weaviate, os
@@ -10,6 +10,8 @@ import openai
 
 from dotenv import load_dotenv, find_dotenv
 
+
+# UNUSED -- KEPT FOR REFERENCE
 
 async def filter_relevant_links_using_title(urls_titles_dict: Dict[str, str], target_data_dict: Dict[str, str]) -> Set[str]:
     # TODO: maybe use some similarity search instead

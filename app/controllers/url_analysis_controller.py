@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from app.models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseModel
 
-from app.services.url_analyzer_service import scrape_then_extract_data
+from app.services.url_analysis.core import scrape_then_extract_data
 
 
 url_analysis_router = APIRouter(prefix="/url-analysis", tags=["URL Analysis"])

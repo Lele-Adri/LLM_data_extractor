@@ -1,14 +1,11 @@
 import os
-from typing import Dict, List, Set, Tuple
+from typing import Dict, Set
 
 from dotenv import load_dotenv
-from pydantic import HttpUrl
-from app.helpers.html_content_helpers import normalize_url
-from app.helpers.llm_helpers import get_gpt_4_completion
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 
-from app.models.url_analysis import UrlAnalysisDiscoveredLinks
+from app.domain.url_analysis.entities import UrlAnalysisDiscoveredLinks
 
 
 load_dotenv()

@@ -1,21 +1,34 @@
-from pydantic import BaseModel, Field
+from typing import Set
+from urllib.parse import urlparse, urlunparse
 
 
-class UrlAnalysisInfoLinks(BaseModel):
-    """Output from function download link content"""
-    html_content: str = Field(..., description="HTML content of the webpage")
-    link_dictionary: dict[str, str] = Field(..., description="Dictionary containing titles and urls of links")
+def normalize_url(url: str):
+    # Parse the URL into components
+    parsed_url = urlparse(url)
+    # Normalize the components
+    normalized = parsed_url._replace(
+        scheme=parsed_url.scheme.lower(),
+        netloc=parsed_url.netloc.lower(),
+        path=parsed_url.path.rstrip('/'),
+        query=parsed_url.query,
+        fragment=''
+    )
+    # Return the normalized URL as a string
+    return urlunparse(normalized)
 
 
-class EmptyUrlAnalysisInfoLinks(UrlAnalysisInfoLinks):
-    html_content: str = ""
-    link_dictionary: dict[str, str] = {}
+def are_sections_of_same_page(url1: str, url2: str) -> bool:
+    idx_hashtag_url1 = url1.find("#")
+    idx_hashtag_url2 = url2.find("#")
+    if idx_hashtag_url1 != -1:
+        url1 = url1[:idx_hashtag_url1]
+    if idx_hashtag_url2 != -1:
+        url2 = url2[:idx_hashtag_url2]
+    return url1 == url2
 
 
-
-class ExtractedDataModel(BaseModel):
-    """Extracted information about some data."""
-    data_name: str = Field(..., description="Name of extracted data.")
-    data_description: str = Field(..., description="Description of extracted data.")
-    data_source: str = Field(..., description="Source of extracted data.")
-    extracted_information: str = Field(..., description="Information extracted corresponding to this data.")
+def set_contains_link(links_set: Set[str], url: str) -> bool:
+    for link in links_set:
+        if are_sections_of_same_page(link, url):
+            return True
+    return False

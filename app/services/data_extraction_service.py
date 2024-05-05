@@ -1,8 +1,10 @@
 from typing import Dict, List, Set
 from langchain_community.document_loaders import WebBaseLoader
 from langchain.indexes import VectorstoreIndexCreator
-from app.models.url_analysis import ExtractedDataModel, UrlAnalysisDiscoveredLinks, UrlAnalysisRequestParams, UrlAnalysisResponseModel
+from app.models.url_analysis import ExtractedDataAndSource
+from app.models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisResponseModel
 from app.helpers.llm_helpers import get_gpt_3
+from app.domain.url_analysis.entities import UrlAnalysisDiscoveredLinks
 
 NOT_FOUND_STRING  = "NOT FOUND"
 
@@ -18,7 +20,7 @@ async def extract_information_and_sources_from_url(params: UrlAnalysisRequestPar
             ans = index.query(query)
             if NOT_FOUND_STRING not in ans and ans != "":
                 response.extracted_data[data].append(
-                    ExtractedDataModel(data_name=data,
+                    ExtractedDataAndSource(data_name=data,
                                        data_description=params.sought_data[data],
                                        data_source=url,
                                        extracted_information=ans)
