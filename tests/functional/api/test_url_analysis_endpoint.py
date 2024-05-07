@@ -1,7 +1,7 @@
 from typing import Dict
 
-from tests.input_cases_enums import SoughtData
-from tests.utils import UrlSource, get_sought_data_dict, post_to_url_analysis
+from tests.input_cases_enums import UrlSource, SoughtData
+from tests.utils import get_sought_data_dict, post_to_url_analysis
 
 def test_url_analysis_valid_empty_data():
     url: str = UrlSource.ATP.url
