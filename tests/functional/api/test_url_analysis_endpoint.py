@@ -1,8 +1,10 @@
 from typing import Dict
 
 from tests.input_cases_enums import UrlSource, SoughtData
+from tests.profiled_tests import profiled_test
 from tests.utils import get_sought_data_dict, post_to_url_analysis
 
+@profiled_test
 def test_url_analysis_valid_empty_data():
     url: str = UrlSource.ATP.url
     response = post_to_url_analysis(url, dict())

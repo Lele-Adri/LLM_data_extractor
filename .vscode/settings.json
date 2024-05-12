@@ -1,6 +1,14 @@
 {
     "cSpell.words": [
+        "Kyrgios",
+        "NOVAK",
         "pydantic",
-        "Rafa"
-    ]
+        "Rafa",
+        "someinvalidurlhere"
+    ],
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
