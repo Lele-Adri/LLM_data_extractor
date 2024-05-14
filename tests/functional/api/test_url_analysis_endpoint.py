@@ -1,7 +1,7 @@
 from typing import Dict
 
 from tests.input_cases_enums import UrlSource, SoughtData
-from tests.profiled_tests import profiled_test
+from benchmarks.profiler import profiled_test
 from tests.utils import get_sought_data_dict, post_to_url_analysis
 
 @profiled_test
