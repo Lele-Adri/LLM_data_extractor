@@ -44,7 +44,7 @@ async def discover_useful_links(params: UrlAnalysisRequestParams) ->  UrlAnalysi
         current_link = links_to_visit.pop()
         print(f'visiting {current_link}')
         visited_links.add(current_link)
-        extracted_links: UrlAnalysisInfoLinks = await get_exposed_urls(current_link)
+        extracted_links: UrlAnalysisInfoLinks = get_exposed_urls(current_link)
         print(f'\textractedLinks: {len(extracted_links.link_dictionary)}')
         extracted_links = remove_known_links(extracted_links, visited_links, links_to_visit)
         print(f'\textractedLinks (remove known): {len(extracted_links.link_dictionary)}')
@@ -58,7 +58,7 @@ async def discover_useful_links(params: UrlAnalysisRequestParams) ->  UrlAnalysi
 
 
 # TODO: make async
-async def get_exposed_urls(url: str) -> UrlAnalysisInfoLinks:
+def get_exposed_urls(url: str) -> UrlAnalysisInfoLinks:
 
     try:
         headers = {

@@ -12,7 +12,7 @@ class UrlAnalysisInfoLinks:
 
 class EmptyUrlAnalysisInfoLinks(UrlAnalysisInfoLinks):
     def __init__(self):
-        super().__init__("", dict())
+        super().__init__(dict())
 
 
 class UrlAnalysisDiscoveredLinks:
