@@ -1,7 +1,9 @@
 from typing import Dict
 
+import pytest
+
+from app.app_constants import IS_PROFILED_ATTRIBUTE_NAME
 from tests.input_cases_enums import UrlSource, SoughtData
-from benchmarks.profiler import profiled_function
 from tests.utils import get_sought_data_dict, post_to_url_analysis
 
 def test_url_analysis_valid_empty_data():
@@ -23,21 +25,21 @@ def test_url_analysis_invalid_None_data():
     response = post_to_url_analysis(url, None)
     assert response.status_code == 422
 
-@profiled_function
+@pytest.mark.usefixtures(IS_PROFILED_ATTRIBUTE_NAME)
 def test_single_specific_data():
     url: str = UrlSource.BAIN.url
     sought_data: Dict[str, str] = get_sought_data_dict([SoughtData.PARTNER_PROFILE])
     response = post_to_url_analysis(url, sought_data)
     assert response.status_code == 200
 
-@profiled_function
+@pytest.mark.usefixtures(IS_PROFILED_ATTRIBUTE_NAME)
 def test_two_specific_unrelated_data():
     url: str = UrlSource.BAIN.url
     sought_data: Dict[str, str] = get_sought_data_dict([SoughtData.PARTNER_PROFILE, SoughtData.PRIMARY_AND_ADDON])
     response = post_to_url_analysis(url, sought_data)
     assert response.status_code == 200
 
-@profiled_function
+@pytest.mark.usefixtures(IS_PROFILED_ATTRIBUTE_NAME)
 def test_two_same_data():
     url: str = UrlSource.GITHUB.url
     sought_data: Dict[str, str] = get_sought_data_dict([SoughtData.PERSONAL_DATA_COLLECTION, SoughtData.PERSONAL_DATA_COLLECTION])

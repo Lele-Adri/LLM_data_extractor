@@ -5,7 +5,8 @@
         "NOVAK",
         "pydantic",
         "Rafa",
-        "someinvalidurlhere"
+        "someinvalidurlhere",
+        "usefixtures"
     ],
     "python.testing.pytestArgs": [
         "tests"
