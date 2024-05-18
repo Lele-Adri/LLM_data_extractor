@@ -45,4 +45,5 @@ secrets.toml
 
 # User defined extras
 venv
-/benchmarks/benchmark_results/full_benchmark.txt
+/benchmarks/benchmark_results
+/tree.txt

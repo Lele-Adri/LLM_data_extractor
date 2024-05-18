@@ -1,24 +1,28 @@
+from collections import defaultdict
+from dataclasses import dataclass, field
 from app.helpers.url_analysis_helpers import set_contains_link
 
 
-from typing import Set
+from typing import Dict, Set
 
 
+@dataclass
 class UrlAnalysisInfoLinks:
     """Output from function download link content"""
-    def __init__(self, link_dictionary):
-        self.link_dictionary: dict[str, str] = link_dictionary
+    link_dictionary: dict[str, str]
 
 
+@dataclass
 class EmptyUrlAnalysisInfoLinks(UrlAnalysisInfoLinks):
     def __init__(self):
-        super().__init__(dict())
+        super().__init__(link_dictionary=dict())
 
 
+@dataclass
 class UrlAnalysisDiscoveredLinks:
     """Object containing discovered links with each data piece as a key"""
-    def __init__(self, extracted_links):
-        self.extracted_links: dict[str, Set[str]] = extracted_links
+    extracted_links: Dict[str, Set[str]]
+
 
     def contains_url(self, url):
         """Checks if a url is contained in the dictionary"""
