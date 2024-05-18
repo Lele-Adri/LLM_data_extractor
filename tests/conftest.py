@@ -6,7 +6,7 @@ import pstats
 import warnings
 
 import pytest
-from app.app_constants import BENCHMARK_RESULTS_DIRECTORY_NAME, ENABLE_PROFILING_ENVIRONMENT_VARIABLE_NAME, IS_PROFILED_ATTRIBUTE_NAME
+from app.app_constants import BENCHMARK_RESULTS_DIRECTORY_NAME, ENABLE_PROFILING_ENVIRONMENT_VARIABLE_NAME, IS_PROFILED_ATTRIBUTE_NAME, MAX_LINKS_TO_VISIT_ENVIRONMENT_VARIABLE_NAME
 from app.helpers.helpers import try_save_benchmark_results_to_file
 from benchmarks.cProfile_output_helper import filter_profile_output
 
@@ -21,6 +21,12 @@ def pytest_collection_modifyitems(config, items):
     for item in items:
         if IS_PROFILED_ATTRIBUTE_NAME in getattr(item, 'fixturenames', ()):
             item.add_marker(IS_PROFILED_ATTRIBUTE_NAME)
+
+
+def get_env_var_summary():
+    # TODO: add token count
+    return "\n".join([f"MAX_ITER = {os.getenv(MAX_LINKS_TO_VISIT_ENVIRONMENT_VARIABLE_NAME, 0)}", 
+                      f"PROFILING_LEVEL = {os.getenv(ENABLE_PROFILING_ENVIRONMENT_VARIABLE_NAME, 0)}"])
 
 
 @pytest.fixture
@@ -42,7 +48,6 @@ def is_profiled(request):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         output_relative_file_path = f"../benchmarks/{BENCHMARK_RESULTS_DIRECTORY_NAME}/{benchmark_filename}"
         output_file_path = os.path.join(script_dir, output_relative_file_path)
-        results_saved = try_save_benchmark_results_to_file(output_file_path, profile_output)
+        results_saved = try_save_benchmark_results_to_file(output_file_path, f"{get_env_var_summary()}\n{profile_output}")
         if not results_saved:
             warnings.warn("Unexpected error writing results to file.")
-
