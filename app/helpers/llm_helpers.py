@@ -4,8 +4,12 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from openai import OpenAI
 
+from app.app_constants import OPENAI_API_KEY_ENVIRONMENT_VARIABLE_NAME
+
 GPT_4_MODEL = "gpt-4-1106-preview" 
 GPT_3_MODEL = "gpt-3.5-turbo-1106" 
+
+api_key=os.getenv(OPENAI_API_KEY_ENVIRONMENT_VARIABLE_NAME)
 
 
 load_dotenv()
@@ -29,7 +33,7 @@ def get_gpt_model(model: str, max_tokens: int, temperature: float) -> ChatOpenAI
         model=model,
         verbose=True,
         max_tokens=max_tokens,
-        api_key=os.getenv("OPENAI_API_KEY")
+        api_key=api_key
     )
 
 def get_chat_gpt_model(model: str, max_tokens: int, temperature: float) -> ChatOpenAI:
@@ -38,7 +42,7 @@ def get_chat_gpt_model(model: str, max_tokens: int, temperature: float) -> ChatO
         model=model,
         verbose=True,
         max_tokens=max_tokens,
-        api_key=os.getenv("OPENAI_API_KEY")
+        api_key=api_key
     )
 
 
@@ -50,7 +54,7 @@ async def get_gpt_4_completion(prompt):
 
 async def get_completion(prompt, model):
     messages = [{"role": "user", "content": prompt}]
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client = OpenAI(api_key=api_key)
     response = client.chat.completions.create(
         model=model,
         messages=messages,

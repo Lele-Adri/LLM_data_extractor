@@ -1,3 +1,4 @@
+import os
 from typing import Dict, Set
 
 from bs4 import BeautifulSoup
@@ -5,6 +6,7 @@ from urllib.parse import urljoin, urlparse
 
 from pydantic import HttpUrl
 import requests
+from app.app_constants import MAX_LINKS_TO_VISIT_ENVIRONMENT_VARIABLE_NAME
 from app.domain.url_analysis.entities import EmptyUrlAnalysisInfoLinks, UrlAnalysisInfoLinks
 from app.helpers.url_analysis_helpers import normalize_url, set_contains_link
 from app.services.url_filtering_embeddings_service import filter_relevant_links_using_title
@@ -13,7 +15,7 @@ from app.models.url_analysis import UrlAnalysisRequestParams, UrlAnalysisRespons
 from app.domain.url_analysis.entities import UrlAnalysisDiscoveredLinks
 from app.services.data_extraction_service import extract_information_and_sources_from_url
 
-MAX_LINKS_TO_VISIT = 5
+MAX_LINKS_TO_VISIT = int(os.getenv(MAX_LINKS_TO_VISIT_ENVIRONMENT_VARIABLE_NAME))
 
 async def scrape_then_extract_data(params: UrlAnalysisRequestParams) -> UrlAnalysisResponseModel:
     links_for_data_extraction: UrlAnalysisDiscoveredLinks = await discover_useful_links(params)

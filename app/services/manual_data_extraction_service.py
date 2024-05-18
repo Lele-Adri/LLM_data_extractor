@@ -9,6 +9,8 @@ from langchain_core.prompts import PromptTemplate
 import htmlmin
 from pydantic import HttpUrl
 
+from app.app_constants import OPENAI_API_KEY_ENVIRONMENT_VARIABLE_NAME
+
 async def extract_information_from_html(html_content: str, data_to_extract: Dict[str, str]) -> Dict[str, str]:
     load_dotenv()
 
@@ -19,7 +21,7 @@ async def extract_information_from_html(html_content: str, data_to_extract: Dict
         model="gpt-3.5-turbo-1106",
         verbose=True,
         max_tokens=1000,
-        api_key=os.getenv("OPENAI_API_KEY")
+        api_key=os.getenv(OPENAI_API_KEY_ENVIRONMENT_VARIABLE_NAME)
     )
 
     sanitized_html = sanitize_html(html_content)
