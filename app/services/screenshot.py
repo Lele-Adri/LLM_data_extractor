@@ -20,7 +20,7 @@ async def take_screenshot():
 
     #service = Service(executable_path='/Users/vasileadrianfeier/Downloads/chromedriver-mac-arm64/chromedriver')
 
-    # Configure Chrome WebDriver options
+    # Configure Chrome WebDriver options hihi
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--window-size=1920,1080")

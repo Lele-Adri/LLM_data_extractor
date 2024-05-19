@@ -6,8 +6,8 @@ from openai import OpenAI
 
 from app.app_constants import OPENAI_API_KEY_ENVIRONMENT_VARIABLE_NAME
 
-GPT_4_MODEL = "gpt-4-1106-preview" 
-GPT_3_MODEL = "gpt-3.5-turbo-1106" 
+GPT_4_MODEL = "gpt-4-1106-preview"
+GPT_3_MODEL = "gpt-3.5-turbo-1106"
 
 api_key=os.getenv(OPENAI_API_KEY_ENVIRONMENT_VARIABLE_NAME)
 
