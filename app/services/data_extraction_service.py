@@ -1,4 +1,4 @@
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Tuple
 from langchain_community.document_loaders import WebBaseLoader
 from langchain.indexes import VectorstoreIndexCreator
 from app.models.url_analysis import ExtractedDataAndSource
@@ -8,35 +8,42 @@ from app.domain.url_analysis.entities import UrlAnalysisDiscoveredLinks
 
 NOT_FOUND_STRING  = "NOT FOUND"
 
-async def extract_information_and_sources_from_url(params: UrlAnalysisRequestParams, discovered_urls: UrlAnalysisDiscoveredLinks) -> UrlAnalysisResponseModel:
+async def extract_information_and_sources_from_url_list(sought_data: Dict[str, str], discovered_urls: UrlAnalysisDiscoveredLinks) -> UrlAnalysisResponseModel:
 
     response: UrlAnalysisResponseModel = UrlAnalysisResponseModel(
         extracted_data={data: set() for data in discovered_urls.extracted_links.keys()})
 
     for data, discovered_urls_set in discovered_urls.extracted_links.items():
-        query = get_data_query(data, params.sought_data[data])
         for url in discovered_urls_set:
-            index = VectorstoreIndexCreator().from_loaders([WebBaseLoader(url)])
-            ans = index.query(query)
-            if NOT_FOUND_STRING not in ans and ans != "":
-                response.extracted_data[data].append(
-                    ExtractedDataAndSource(data_name=data,
-                                       data_description=params.sought_data[data],
-                                       data_source=url,
-                                       extracted_information=ans)
-                )
+            extracted_data = await extract_information_and_sources_from_url(url, (data, sought_data[data]))
+            if extracted_data:
+                response.extracted_data[data].append(extracted_data)
 
     return response
+
+
+async def extract_information_and_sources_from_url(url: str, data: Tuple[str, str]) -> ExtractedDataAndSource:
+    (sought_data_name, sought_data_description) = data
+    index = await VectorstoreIndexCreator().afrom_loaders([WebBaseLoader(url)])
+    query = get_data_query(sought_data_name, sought_data_description)
+    ans = await index.aquery(query)
+    if NOT_FOUND_STRING not in ans and ans != "":
+        return ExtractedDataAndSource(data_name=sought_data_name,
+                                      data_description=sought_data_description,
+                                      data_source=url,
+                                      extracted_information=ans)
+    return None
+
 
 async def extract_information_from_url(params: UrlAnalysisRequestParams, urls_list: List[str]) -> Dict[str, str]:
     if (len(urls_list) == 0): return dict()
 
-    index = VectorstoreIndexCreator().from_loaders([WebBaseLoader(url) for url in urls_list])
+    index = await VectorstoreIndexCreator().afrom_loaders([WebBaseLoader(url) for url in urls_list])
     extracted_data_dict = dict()
 
     for data, description in params.sought_data.items():
         query = get_data_query(data, description)
-        ans = index.query(query)
+        ans = await index.aquery(query)
         if "NOT FOUND" not in ans and ans != "":
             extracted_data_dict[data] = f"{extracted_data_dict.get(data, '')}\n{ans}"
 
