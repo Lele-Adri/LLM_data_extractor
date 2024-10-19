@@ -6,7 +6,6 @@ from app.services.url_analysis import scrape_then_extract_data
 
 url_analysis_router = APIRouter(prefix="/url-analysis", tags=["URL Analysis"])
 
-# Endpoint for https://your-domain.com/
 @url_analysis_router.get("/hello")
 def root():
     return {
