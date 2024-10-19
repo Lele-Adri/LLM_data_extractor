@@ -23,16 +23,5 @@ async def analyze_url(request: UrlAnalysisRequestParams) -> UrlAnalysisResponseM
     Returns:
     - dict: A dictionary containing the data retrieved.
     """
-    # Implementation of URL analysis would go here
     extractedData : UrlAnalysisResponseModel = await scrape_then_extract_data(request)
     return extractedData
-
-
-@url_analysis_router.post("/test_adri")
-async def test_adri_url(request: dict) -> str:
-    """
-    """
-    name_1 = request["nom"]
-    name_2 = request["quality"]
-
-    return name_1 + " is very " + name_2
